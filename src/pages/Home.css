@@ -1,0 +1,31 @@
+/* Password Strength Indicator Styles */
+.password-strength {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.strength-bar {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.strength-segment {
+  height: 6px;
+  flex: 1;
+  border-radius: 3px;
+  background-color: #ddd;
+  transition: background-color 0.3s ease;
+}
+
+.strength-segment.active {
+  background-color: #4caf50;
+}
+
+.strength-text {
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 50px;
+}
