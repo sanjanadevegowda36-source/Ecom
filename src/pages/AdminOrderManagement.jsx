@@ -4,6 +4,9 @@ import { useProductContext } from '../context/ProductContext';
 import { FaBox, FaEdit, FaTrash, FaSearch, FaFilter, FaEye, FaDownload, FaArrowLeft, FaSignOutAlt, FaMotorcycle, FaPhone, FaUserTie, FaMapMarkerAlt } from 'react-icons/fa';
 import './AdminDashboard.css';
 
+const API_BASE_URL = 'https://backend-yf0o.onrender.com';
+const toApiUrl = (path) => path.startsWith('/api') ? `${API_BASE_URL}${path}` : `${API_BASE_URL}/api${path}`;
+
 const AdminOrderManagement = () => {
   const navigate = useNavigate();
   const { updateOrderStatus, deleteOrder, orderStatuses, logoutUser, orders } = useProductContext();
@@ -16,7 +19,7 @@ const AdminOrderManagement = () => {
   useEffect(() => {
     const fetchAgents = async () => {
       try {
-        const response = await fetch('/api/delivery-agents/available');
+        const response = await fetch(toApiUrl('/delivery-agents/available'));
         const data = await response.json();
         setDeliveryAgents(data);
       } catch (error) {
@@ -101,7 +104,7 @@ const AdminOrderManagement = () => {
     if (!agent) return;
 
     try {
-      const response = await fetch(`/api/orders/${selectedOrderId}/assign-agent`, {
+      const response = await fetch(toApiUrl(`/orders/${selectedOrderId}/assign-agent`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -120,7 +120,7 @@ export const ProductProvider = ({ children }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/products');
+        const response = await fetch(toApiUrl('/products'));
         if (response.ok) {
           const data = await response.json();
           // Convert MongoDB _id to id for frontend compatibility
@@ -164,7 +164,7 @@ export const ProductProvider = ({ children }) => {
       try {
         // Fetch cart - try by _id first, fallback not needed since cart requires login
         if (user._id) {
-          const cartRes = await fetch(`/api/cart/${user._id}`);
+          const cartRes = await fetch(toApiUrl(`/cart/${user._id}`));
           if (cartRes.ok) {
             const cartData = await cartRes.json();
             if (cartData.items) {
@@ -175,7 +175,7 @@ export const ProductProvider = ({ children }) => {
           }
           
           // Fetch wishlist
-          const wishlistRes = await fetch(`/api/wishlist/${user._id}`);
+          const wishlistRes = await fetch(toApiUrl(`/wishlist/${user._id}`));
           if (wishlistRes.ok) {
             const wishlistData = await wishlistRes.json();
             if (wishlistData.items) {
@@ -188,7 +188,7 @@ export const ProductProvider = ({ children }) => {
           // Fetch orders - for admin get ALL orders, for regular users get their orders
           if (user.role === 'admin') {
             // Admin gets all orders
-            const allOrdersRes = await fetch('/api/orders');
+            const allOrdersRes = await fetch(toApiUrl('/orders'));
             if (allOrdersRes.ok) {
               const ordersData = await allOrdersRes.json();
               const ordersWithId = ordersData.map(order => ({ ...order, id: order._id }));
@@ -197,7 +197,7 @@ export const ProductProvider = ({ children }) => {
             }
           } else {
             // Regular users get their orders
-            const ordersRes = await fetch(`/api/orders/user/${user._id}`);
+            const ordersRes = await fetch(toApiUrl(`/orders/user/${user._id}`));
             if (ordersRes.ok) {
               const ordersData = await ordersRes.json();
               const ordersWithId = ordersData.map(order => ({ ...order, id: order._id }));
@@ -208,7 +208,7 @@ export const ProductProvider = ({ children }) => {
         } else if (user.email) {
           // Fallback: fetch orders by email if _id not available (only for non-admin)
           if (user.role !== 'admin') {
-            const ordersRes = await fetch(`/api/orders/user/email/${user.email}`);
+            const ordersRes = await fetch(toApiUrl(`/orders/user/email/${user.email}`));
             if (ordersRes.ok) {
               const ordersData = await ordersRes.json();
               const ordersWithId = ordersData.map(order => ({ ...order, id: order._id }));
@@ -278,7 +278,7 @@ export const ProductProvider = ({ children }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('/api/auth/users');
+        const response = await fetch(toApiUrl('/auth/users'));
         if (response.ok) {
           const data = await response.json();
           // Convert MongoDB _id to id for frontend compatibility
@@ -320,7 +320,7 @@ export const ProductProvider = ({ children }) => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('/api/orders');
+        const response = await fetch(toApiUrl('/orders'));
         if (response.ok) {
           const data = await response.json();
           // Convert MongoDB _id to id for frontend compatibility
@@ -347,7 +347,7 @@ export const ProductProvider = ({ children }) => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch('/api/tasks');
+        const response = await fetch(toApiUrl('/tasks'));
         if (response.ok) {
           const data = await response.json();
           // Convert MongoDB _id to id for frontend compatibility
@@ -396,7 +396,7 @@ export const ProductProvider = ({ children }) => {
   const addProduct = async (product) => {
     try {
       const token = localStorage.getItem('sanjucart_token');
-      const response = await fetch('/api/products', {
+      const response = await fetch(toApiUrl('/products'), {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -425,7 +425,7 @@ export const ProductProvider = ({ children }) => {
   const updateProduct = async (productId, updatedProduct) => {
     try {
       const token = localStorage.getItem('sanjucart_token');
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(toApiUrl(`/products/${productId}`), {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -456,7 +456,7 @@ export const ProductProvider = ({ children }) => {
   const deleteProduct = async (productId) => {
     try {
       const token = localStorage.getItem('sanjucart_token');
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(toApiUrl(`/products/${productId}`), {
         method: 'DELETE',
         headers: { 
           'Authorization': `Bearer ${token}`
@@ -497,7 +497,7 @@ export const ProductProvider = ({ children }) => {
     
     try {
       const productId = product.id || product._id;
-      const response = await fetch(`/api/cart/${user._id}`, {
+      const response = await fetch(toApiUrl(`/cart/${user._id}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -549,7 +549,7 @@ export const ProductProvider = ({ children }) => {
     }
     
     try {
-      const response = await fetch(`/api/cart/${user._id}/${productId}`, {
+      const response = await fetch(toApiUrl(`/cart/${user._id}/${productId}`), {
         method: 'DELETE'
       });
       
@@ -587,7 +587,7 @@ export const ProductProvider = ({ children }) => {
     }
     
     try {
-      const response = await fetch(`/api/cart/${user._id}/${productId}`, {
+      const response = await fetch(toApiUrl(`/cart/${user._id}/${productId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quantity })
@@ -635,7 +635,7 @@ export const ProductProvider = ({ children }) => {
     }
     
     try {
-      await fetch(`/api/cart/${user._id}`, {
+      await fetch(toApiUrl(`/cart/${user._id}`), {
         method: 'DELETE'
       });
     } catch (error) {
@@ -661,7 +661,7 @@ export const ProductProvider = ({ children }) => {
     
     try {
       const productId = product.id || product._id;
-      const response = await fetch(`/api/wishlist/${user._id}`, {
+      const response = await fetch(toApiUrl(`/wishlist/${user._id}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -705,7 +705,7 @@ export const ProductProvider = ({ children }) => {
     }
     
     try {
-      const response = await fetch(`/api/wishlist/${user._id}/${productId}`, {
+      const response = await fetch(toApiUrl(`/wishlist/${user._id}/${productId}`), {
         method: 'DELETE'
       });
       
@@ -739,7 +739,7 @@ export const ProductProvider = ({ children }) => {
     }
     
     try {
-      await fetch(`/api/wishlist/${user._id}`, {
+      await fetch(toApiUrl(`/wishlist/${user._id}`), {
         method: 'DELETE'
       });
     } catch (error) {
@@ -749,8 +749,13 @@ export const ProductProvider = ({ children }) => {
     localStorage.removeItem('sanjucart_wishlist');
   };
 
-  // API Base URL - uses proxy in development
-const API_BASE_URL = '/api/auth';
+  // API Base URL - direct to backend
+const API_BASE_URL = 'https://backend-yf0o.onrender.com';
+
+const toApiUrl = (path) => {
+  const cleanPath = path.startsWith('/api') ? path : `/api${path}`;
+  return `${API_BASE_URL}${cleanPath}`;
+};
 
 // API helper function
 const apiCall = async (endpoint, method = 'GET', body = null) => {
@@ -764,7 +769,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
     options.body = JSON.stringify(body);
   }
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+    const response = await fetch(toApiUrl(endpoint), options);
     
     // Always try to parse JSON response
     let data;
@@ -790,7 +795,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
 // Login user - calls backend API only (no fallback)
   const loginUser = async (email, password) => {
     try {
-      const { response, data } = await apiCall('/login', 'POST', { email, password });
+      const { response, data } = await apiCall('/auth/login', 'POST', { email, password });
       
       // Check if we got valid data
       if (!data || !data.success) {
@@ -849,7 +854,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
         registrationData.licenseNumber = userData.licenseNumber;
       }
       
-      const { response, data } = await apiCall('/register', 'POST', registrationData);
+      const { response, data } = await apiCall('/auth/register', 'POST', registrationData);
       
       // Check if we got valid data
       if (!data || !data.success) {
@@ -900,13 +905,13 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
   const createProfessional = async (workerData) => {
     try {
       // Check if user already exists in backend
-      const checkResponse = await fetch(`/api/users/email/${workerData.email}`);
+      const checkResponse = await fetch(toApiUrl(`/users/email/${workerData.email}`));
       if (checkResponse.ok) {
         return { success: false, message: 'User with this email already exists' };
       }
       
       // Register professional via auth API
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(toApiUrl('/auth/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -927,7 +932,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
       }
 
       // Refresh users list from backend
-      const usersResponse = await fetch('/api/users');
+      const usersResponse = await fetch(toApiUrl('/users'));
       if (usersResponse.ok) {
         const usersData = await usersResponse.json();
         const usersWithId = usersData.map(user => ({
@@ -947,7 +952,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
   // Assign task to worker (admin function) - calls MongoDB backend
   const assignTaskToWorker = async (task) => {
     try {
-      const response = await fetch('/api/tasks', {
+      const response = await fetch(toApiUrl('/tasks'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -980,7 +985,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
   // Update worker task (admin/worker function) - calls MongoDB backend
   const updateWorkerTask = async (taskId, taskData) => {
     try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
+      const response = await fetch(toApiUrl(`/tasks/${taskId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(taskData)
@@ -1061,7 +1066,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
 
     // Try to save to MongoDB
     try {
-      const response = await fetch('/api/orders', {
+      const response = await fetch(toApiUrl('/orders'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1101,7 +1106,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
     const orderIdStr = orderId.toString();
     
     try {
-      const response = await fetch(`/api/orders/${orderIdStr}`, {
+      const response = await fetch(toApiUrl(`/orders/${orderIdStr}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -1134,7 +1139,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
     const orderIdStr = orderId.toString();
     
     try {
-      await fetch(`/api/orders/${orderIdStr}`, {
+      await fetch(toApiUrl(`/orders/${orderIdStr}`), {
         method: 'DELETE'
       });
     } catch (error) {
@@ -1149,7 +1154,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
   // Update user (admin function) - calls backend API
   const updateUser = async (email, userData) => {
     try {
-      const response = await fetch(`/api/users/email/${email}`, {
+      const response = await fetch(toApiUrl(`/users/email/${email}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
@@ -1176,7 +1181,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
   // Delete user (admin function) - calls backend API
   const deleteUser = async (email) => {
     try {
-      const response = await fetch(`/api/users/email/${email}`, {
+      const response = await fetch(toApiUrl(`/users/email/${email}`), {
         method: 'DELETE'
       });
       
@@ -1206,7 +1211,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
   // Approve or reject user (admin function)
   const approveUser = async (userId, isApproved) => {
     try {
-      const response = await fetch(`/api/auth/approve-user/${userId}`, {
+      const response = await fetch(toApiUrl(`/auth/approve-user/${userId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isApproved })
@@ -1230,7 +1235,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
   // Update user page access (admin function) - calls backend API
   const updateUserPageAccess = async (email, pageAccess) => {
     try {
-      const response = await fetch(`/api/users/email/${email}`, {
+      const response = await fetch(toApiUrl(`/users/email/${email}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pageAccess })

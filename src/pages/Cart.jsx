@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useProductContext, getProductIcon } from '../context/ProductContext';
 import { FaTrash, FaPlus, FaMinus, FaCreditCard, FaMapMarkerAlt, FaBox, FaPhone, FaUser } from 'react-icons/fa';
 
+const API_BASE_URL = 'https://backend-yf0o.onrender.com';
+const toApiUrl = (path) => path.startsWith('/api') ? `${API_BASE_URL}${path}` : `${API_BASE_URL}/api${path}`;
+
 // Helper to render product icon (handles both old emoji and new iconName)
 const renderProductIcon = (item) => {
   if (item.iconName) {
@@ -41,7 +44,7 @@ function Cart() {
   useEffect(() => {
     const fetchRazorpayKey = async () => {
       try {
-        const response = await fetch('/api/payment/key');
+        const response = await fetch(toApiUrl('/payment/key'));
         const data = await response.json();
         console.log('Razorpay key fetched:', data);
         setRazorpayKey(data.key);
@@ -164,7 +167,7 @@ function Cart() {
       }
       
       console.log('Sending amount:', totalAmount);
-      const orderResponse = await fetch('/api/payment/create-order', {
+      const orderResponse = await fetch(toApiUrl('/payment/create-order'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: Math.round(totalAmount) })
@@ -207,7 +210,7 @@ function Cart() {
           }
         },
         handler: async (response) => {
-          const verifyResponse = await fetch('/api/payment/verify-payment', {
+          const verifyResponse = await fetch(toApiUrl('/payment/verify-payment'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
