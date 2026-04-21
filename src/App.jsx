@@ -200,6 +200,10 @@ function App() {
                 {showProfileDropdown ? <FaChevronUp /> : <FaChevronDown />}
               </div>
               
+              <button onClick={handleLogout} className="logout-btn" title="Logout">
+                <FaSignOutAlt />
+              </button>
+              
               {/* Profile Dropdown - Shows only when clicked */}
               {showProfileDropdown && (
                 <div className="profile-dropdown">

@@ -111,9 +111,272 @@ export const hasPageAccess = (user, page) => {
   return allowedRoles.includes(user.role);
 };
 
+const defaultProducts = [
+  {
+    id: 1,
+    brand: 'Dell',
+    name: 'Inspiron 16 Laptop',
+    description: 'Dell 16 Laptop with Intel Core i5, 16GB RAM, 512GB SSD',
+    detailedDescription: 'Dell 16 Laptop\nProcessor: Intel Core i5 120U (10 cores, up to 5.0 GHz)\nOperating System: Windows 11 Home\nMemory: 16GB DDR5\nStorage: 512GB M.2 PCIe NVMe SSD\nDisplay: 16.0-inch FHD+ (1920x1200) Anti-Glare\nColor: Platinum Silver',
+    price: 40000,
+    discount: 10,
+    profit: 2000,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://dellstatic.luroconnect.com/media/catalog/product/cache/74ae05ef3745aec30d7f5a287debd7f5/b/t/bts-dell-dc16250-laptop.png'
+  },
+  {
+    id: 2,
+    brand: 'HP',
+    name: 'Pavilion x360',
+    description: 'HP 2-in-1 Laptop with Touchscreen, Intel Core i5',
+    detailedDescription: 'HP Pavilion x360\nProcessor: Intel Core i5-1235U\nDisplay: 14-inch FHD Touchscreen\nMemory: 8GB DDR4 RAM\nStorage: 512GB SSD\nGraphics: Intel Iris Xe\nBattery: 43Wh, up to 8 hours',
+    price: 54999,
+    discount: 15,
+    profit: 3000,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://ssl-product-images.www8-hp.com/digmedialib/prodimg/lowres/c08731876.png'
+  },
+  {
+    id: 3,
+    brand: 'Lenovo',
+    name: 'ThinkPad E14',
+    description: 'Lenovo Business Laptop with Intel Core i5, 16GB RAM',
+    detailedDescription: 'Lenovo ThinkPad E14\nProcessor: Intel Core i5-1235U\nDisplay: 14-inch FHD (1920x1080)\nMemory: 16GB DDR4\nStorage: 512GB SSD\nSecurity: Fingerprint Reader, TPM 2.0',
+    price: 58999,
+    discount: 12,
+    profit: 3500,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://pccasegear.co.nz/images/products/ThinkPad-E14-Gen-4-600x600.png'
+  },
+  {
+    id: 4,
+    brand: 'Apple',
+    name: 'MacBook Air M2',
+    description: 'Apple MacBook Air with M2 chip, 13.6-inch Display',
+    detailedDescription: 'Apple MacBook Air M2\nChip: Apple M2\nDisplay: 13.6-inch Liquid Retina\nMemory: 8GB Unified Memory\nStorage: 256GB SSD\nBattery: 52.6Wh, up to 18 hours',
+    price: 84990,
+    discount: 5,
+    profit: 5000,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/macbook-air-15-midnight-select-202306.jpg'
+  },
+  {
+    id: 5,
+    brand: 'Asus',
+    name: 'VivoBook 15',
+    description: 'Asus Laptop with Intel Core i3, 8GB RAM, 512GB SSD',
+    detailedDescription: 'Asus VivoBook 15\nProcessor: Intel Core i3-1215U\nDisplay: 15.6-inch FHD\nMemory: 8GB DDR4\nStorage: 512GB SSD\nGraphics: Intel UHD',
+    price: 32999,
+    discount: 8,
+    profit: 1500,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://www.asus.com/media-global/gallery/0J01C6E01D01/MO_01_600x600.jpg'
+  },
+  {
+    id: 6,
+    brand: 'Acer',
+    name: 'Aspire 5',
+    description: 'Acer Laptop with AMD Ryzen 5, 16GB RAM',
+    detailedDescription: 'Acer Aspire 5\nProcessor: AMD Ryzen 5 5625U\nDisplay: 15.6-inch FHD\nMemory: 16GB DDR4\nStorage: 512GB SSD\nGraphics: AMD Radeon',
+    price: 45999,
+    discount: 10,
+    profit: 2500,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://cdn.shop.speedy.com.np/upload/products/1657623480.jpg'
+  },
+  {
+    id: 7,
+    brand: 'Samsung',
+    name: 'Galaxy Book3',
+    description: 'Samsung Laptop with Intel Core i5, 16GB RAM',
+    detailedDescription: 'Samsung Galaxy Book3\nProcessor: Intel Core i5-1335U\nDisplay: 15.6-inch FHD\nMemory: 16GB DDR5\nStorage: 512GB SSD\nWeight: 1.57kg',
+    price: 66999,
+    discount: 12,
+    profit: 4000,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://images.samsung.com/is/image/samsung/p6pnp/galaxy-book3/galaxy-book3-np730qeg-kb1-01.jpg'
+  },
+  {
+    id: 8,
+    brand: 'MSI',
+    name: 'Modern 15',
+    description: 'MSI Laptop with Intel Core i7, 16GB RAM',
+    detailedDescription: 'MSI Modern 15\nProcessor: Intel Core i7-1255U\nDisplay: 15.6-inch FHD\nMemory: 16GB DDR4\nStorage: 512GB SSD\nGraphics: Intel Iris Xe',
+    price: 59999,
+    discount: 8,
+    profit: 3500,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://in.msi.com/Archive/images/product/Modern-15-B12M/1.png'
+  },
+  {
+    id: 9,
+    brand: 'Dell',
+    name: 'XPS 13 Plus',
+    description: 'Dell Premium Laptop with Intel Core i7, OLED Display',
+    detailedDescription: 'Dell XPS 13 Plus\nProcessor: Intel Core i7-1360P\nDisplay: 13.4-inch 3.5K OLED\nMemory: 16GB LPDDR5\nStorage: 512GB SSD\nGraphics: Intel Iris Xe',
+    price: 119999,
+    discount: 15,
+    profit: 8000,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://i.dell.com/is/image/dellpersonal/content/dam/images/products/laptops/xps/13-plus/charcoal-gallery-3.psd?wid=600&hei=450&fmt=png-alpha'
+  },
+  {
+    id: 10,
+    brand: 'Lenovo',
+    name: 'IdeaPad Gaming 3',
+    description: 'Lenovo Gaming Laptop with RTX 3050',
+    detailedDescription: 'Lenovo IdeaPad Gaming 3\nProcessor: Intel Core i5-12450H\nDisplay: 15.6-inch FHD 120Hz\nGraphics: NVIDIA RTX 3050\nMemory: 8GB DDR4\nStorage: 512GB SSD',
+    price: 65999,
+    discount: 12,
+    profit: 4000,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://pcm渠道.com/images/products/lenovo-ideapad-gaming-3.jpg'
+  },
+  {
+    id: 11,
+    brand: 'HP',
+    name: 'Omen 16',
+    description: 'HP Gaming Laptop with Intel Core i7, RTX 3060',
+    detailedDescription: 'HP Omen 16\nProcessor: Intel Core i7-12700H\nDisplay: 16.1-inch FHD 144Hz\nGraphics: NVIDIA RTX 3060\nMemory: 16GB DDR5\nStorage: 1TB SSD',
+    price: 94999,
+    discount: 18,
+    profit: 6000,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://ssl-product-images.www8-hp.com/digmedialib/prodimg/lowres/c08731379.png'
+  },
+  {
+    id: 12,
+    brand: 'Asus',
+    name: 'ROG Strix G15',
+    description: 'Asus Gaming Laptop with AMD Ryzen 7, RTX 4070',
+    detailedDescription: 'Asus ROG Strix G15\nProcessor: AMD Ryzen 7 6800H\nDisplay: 15.6-inch FHD 300Hz\nGraphics: NVIDIA RTX 4070\nMemory: 16GB DDR5\nStorage: 1TB SSD',
+    price: 129999,
+    discount: 10,
+    profit: 10000,
+    gst: 18,
+    iconName: 'FaLaptop',
+    image: 'https://rog.asus.com/media/198198/198198/gallery/ROG_Strix_G15_G513_3.jpg'
+  },
+  {
+    id: 13,
+    brand: 'Apple',
+    name: 'iPhone 15 Pro Max',
+    description: 'Apple iPhone 15 Pro Max with A17 Pro chip, Titanium',
+    detailedDescription: 'Apple iPhone 15 Pro Max\nChip: A17 Pro\nDisplay: 6.7-inch Super Retina XDR\nCamera: 48MP Main, 12MP Ultra Wide, 12MP Telephoto\nBattery: 4441mAh\nTitanium Design',
+    price: 159900,
+    discount: 8,
+    profit: 10000,
+    gst: 18,
+    iconName: 'FaMobileAlt',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-black-titanium-cellular-eleanor-full_AV1.jpg'
+  },
+  {
+    id: 14,
+    brand: 'Samsung',
+    name: 'Galaxy S24 Ultra',
+    description: 'Samsung Galaxy S24 Ultra with Galaxy AI, 200MP Camera',
+    detailedDescription: 'Samsung Galaxy S24 Ultra\nProcessor: Snapdragon 8 Gen 3\nDisplay: 6.8-inch QHD+ Dynamic AMOLED\nCamera: 200MP Main, 50MP + 10MP Telephoto\nBattery: 5000mAh\nS Pen Included',
+    price: 129999,
+    discount: 10,
+    profit: 8000,
+    gst: 18,
+    iconName: 'FaMobileAlt',
+    image: 'https://images.samsung.com/is/image/samsung/p6pnp/galaxy-s24/galaxy-s24-ultra-01-gallery-avatar-533159992.jpg'
+  },
+  {
+    id: 15,
+    brand: 'OnePlus',
+    name: '12',
+    description: 'OnePlus 12 with Snapdragon 8 Gen 3, Hasselblad Camera',
+    detailedDescription: 'OnePlus 12\nProcessor: Snapdragon 8 Gen 3\nDisplay: 6.82-inch 2K ProXDR\nCamera: 50MP + 48MP + 64MP Hasselblad\nBattery: 5400mAh\n100W Charging',
+    price: 79999,
+    discount: 12,
+    profit: 5000,
+    gst: 18,
+    iconName: 'FaMobileAlt',
+    image: 'https://oasis.opstatics.com/image//product/69/79/77/9c5e2f38-0e3a-4fb7-9ce0-c0abec8daf6a_001_Silky_Silver.png'
+  },
+  {
+    id: 16,
+    brand: 'Sony',
+    name: 'WH-1000XM5',
+    description: 'Sony Premium Headphones with Noise Cancellation',
+    detailedDescription: 'Sony WH-1000XM5\nDriver: 30mm\nNoise Cancellation: Industry Leading\nBattery: 30 hours\nAudio: Hi-Res Audio, LDAC\nFeatures: Multipoint Connection',
+    price: 27990,
+    discount: 15,
+    profit: 2000,
+    gst: 18,
+    iconName: 'FaHeadphones',
+    image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500'
+  },
+  {
+    id: 17,
+    brand: 'Apple',
+    name: 'AirPods Pro 2nd Gen',
+    description: 'Apple AirPods Pro with Active Noise Cancellation',
+    detailedDescription: 'Apple AirPods Pro 2nd Gen\nChip: Apple H2\nNoise Cancellation: Active with Transparency Mode\nBattery: 6 hours, 30 hours with case\nAudio: Personalized Spatial Audio\nTouch Control',
+    price: 24900,
+    discount: 5,
+    profit: 1500,
+    gst: 18,
+    iconName: 'FaHeadphones',
+    image: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-pro-2nd-gen-gallery-1-202209.jpg'
+  },
+  {
+    id: 18,
+    brand: 'BoAt',
+    name: 'Airdopes 441 Pro',
+    description: 'BoAt True Wireless Earbuds with 50 hours Playback',
+    detailedDescription: 'BoAt Airdopes 441 Pro\nDriver: 6mm\nBattery: 50 hours total playback\nFeatures: IWP Technology, ASAP Charge\nBluetooth: v5.2\nWater Resistance: IPX7',
+    price: 1999,
+    discount: 30,
+    profit: 300,
+    gst: 18,
+    iconName: 'FaHeadphones',
+    image: 'https://cdn.shopkund.com/product-images/a91/airdopes-441-pro-1.jpg'
+  },
+  {
+    id: 19,
+    brand: 'JBL',
+    name: 'Tune 770NC',
+    description: 'JBL Wireless Headphones with Adaptive Noise Cancelling',
+    detailedDescription: 'JBL Tune 770NC\nDriver: 40mm\nNoise Cancellation: Adaptive ANC\nBattery: 70 hours\nAudio: JBL Pure Bass Sound\nConnectivity: Bluetooth 5.3',
+    price: 4999,
+    discount: 25,
+    profit: 500,
+    gst: 18,
+    iconName: 'FaHeadphones',
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500'
+  },
+  {
+    id: 20,
+    brand: 'Nike',
+    name: 'Air Max 270',
+    description: 'Nike Air Max 270 Running Shoes',
+    detailedDescription: 'Nike Air Max 270\nUpper: Mesh\nSole: Rubber with Max Air unit\nCushioning: Air Max technology\nClosure: Lace-up\nColor: White/Black/Red',
+    price: 8499,
+    discount: 20,
+    profit: 1500,
+    gst: 18,
+    iconName: 'FaShoppingBag',
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500'
+  }
+];
+
 export const ProductProvider = ({ children }) => {
-  // Products state
-  const [products, setProducts] = useState([]);
+  // Products state - initialize with default products
+  const [products, setProducts] = useState(defaultProducts);
   const [loading, setLoading] = useState(true);
 
   // Fetch products from MongoDB backend on mount
@@ -164,25 +427,33 @@ export const ProductProvider = ({ children }) => {
       try {
         // Fetch cart - try by _id first, fallback not needed since cart requires login
         if (user._id) {
-          const cartRes = await fetch(toApiUrl(`/cart/${user._id}`));
-          if (cartRes.ok) {
-            const cartData = await cartRes.json();
-            if (cartData.items) {
-              const items = cartData.items.map(item => ({ ...item, id: item.productId }));
-              setCart(items);
-              localStorage.setItem('sanjucart_cart', JSON.stringify(items));
+          try {
+            const cartRes = await fetch(toApiUrl(`/cart/${user._id}`));
+            if (cartRes.ok) {
+              const cartData = await cartRes.json();
+              if (cartData.items && Array.isArray(cartData.items)) {
+                const items = cartData.items.map(item => ({ ...item, id: item.productId }));
+                setCart(items);
+                localStorage.setItem('sanjucart_cart', JSON.stringify(items));
+              }
             }
+          } catch (cartError) {
+            console.log('Cart fetch error, using local storage');
           }
           
           // Fetch wishlist
-          const wishlistRes = await fetch(toApiUrl(`/wishlist/${user._id}`));
-          if (wishlistRes.ok) {
-            const wishlistData = await wishlistRes.json();
-            if (wishlistData.items) {
-              const items = wishlistData.items.map(item => ({ ...item, id: item.productId }));
-              setWishlist(items);
-              localStorage.setItem('sanjucart_wishlist', JSON.stringify(items));
+          try {
+            const wishlistRes = await fetch(toApiUrl(`/wishlist/${user._id}`));
+            if (wishlistRes.ok) {
+              const wishlistData = await wishlistRes.json();
+              if (wishlistData.items && Array.isArray(wishlistData.items)) {
+                const items = wishlistData.items.map(item => ({ ...item, id: item.productId }));
+                setWishlist(items);
+                localStorage.setItem('sanjucart_wishlist', JSON.stringify(items));
+              }
             }
+          } catch (wishlistError) {
+            console.log('Wishlist fetch error, using local storage');
           }
           
           // Fetch orders - for admin get ALL orders, for regular users get their orders
@@ -516,12 +787,14 @@ export const ProductProvider = ({ children }) => {
       if (response.ok) {
         const cartData = await response.json();
         // Convert MongoDB items to frontend format
-        const items = cartData.items.map(item => ({
-          ...item,
-          id: item.productId
-        }));
-        setCart(items);
-        localStorage.setItem('sanjucart_cart', JSON.stringify(items));
+        if (cartData.items && Array.isArray(cartData.items)) {
+          const items = cartData.items.map(item => ({
+            ...item,
+            id: item.productId
+          }));
+          setCart(items);
+          localStorage.setItem('sanjucart_cart', JSON.stringify(items));
+        }
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -1054,6 +1327,7 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
     const newOrder = {
       id: Date.now(),
       ...orderDetails,
+      shippingAddress: orderDetails.shippingAddress || orderDetails.address,
       items: itemsWithCalculations,
       subtotal: subtotal.toFixed(2),
       discount: totalDiscount.toFixed(2),
@@ -1085,6 +1359,8 @@ const apiCall = async (endpoint, method = 'GET', body = null) => {
         const orderWithId = { ...newOrder, _id: savedOrder._id, id: savedOrder._id };
         setOrders([orderWithId, ...orders]);
         localStorage.setItem('sanjucart_orders', JSON.stringify([orderWithId, ...orders]));
+        clearCart();
+        return orderWithId;
       } else {
         // Fallback to localStorage
         setOrders([newOrder, ...orders]);

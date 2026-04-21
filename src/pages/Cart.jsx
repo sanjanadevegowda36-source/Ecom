@@ -39,6 +39,7 @@ function Cart() {
   const [errors, setErrors] = useState({});
   const [razorpayKey, setRazorpayKey] = useState('');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentDemoMode, setPaymentDemoMode] = useState(false);
 
   // Fetch Razorpay key on mount
   useEffect(() => {
@@ -47,9 +48,15 @@ function Cart() {
         const response = await fetch(toApiUrl('/payment/key'));
         const data = await response.json();
         console.log('Razorpay key fetched:', data);
-        setRazorpayKey(data.key);
+        setRazorpayKey(data.key || '');
+        setPaymentDemoMode(data.demo === true);
+        if (data.demo === true) {
+          setPaymentMethod('cod');
+        }
       } catch (error) {
         console.error('Error fetching Razorpay key:', error);
+        setPaymentDemoMode(true);
+        setPaymentMethod('cod');
       }
     };
     fetchRazorpayKey();
@@ -176,8 +183,33 @@ function Cart() {
       const orderData = await orderResponse.json();
       console.log('Order response status:', orderResponse.status, 'data:', orderData);
       
-      if (!orderResponse.ok || !orderData.id) {
+      if (!orderResponse.ok || (!orderData.id && !orderData.demo)) {
         alert('Failed to create payment order: ' + (orderData.message || orderData.error || 'Unknown error'));
+        setIsProcessingPayment(false);
+        return;
+      }
+
+      // If demo order (Razorpay not configured), skip to order creation
+      if (orderData.demo) {
+        console.log('Demo order created, proceeding without Razorpay');
+        const order = await createOrder({
+          userEmail: user?.email,
+          userName: shippingAddress.name,
+          address: {
+            name: shippingAddress.name,
+            phone: shippingAddress.phone,
+            address: shippingAddress.address
+          },
+          shippingAddress: {
+            name: shippingAddress.name,
+            phone: shippingAddress.phone,
+            address: shippingAddress.address
+          },
+          paymentMethod: 'Demo Payment',
+        });
+        
+        setOrderPlaced(order);
+        setCheckoutStep('success');
         setIsProcessingPayment(false);
         return;
       }
@@ -223,9 +255,14 @@ function Cart() {
           const verifyData = await verifyResponse.json();
           
           if (verifyData.success) {
-            const order = createOrder({
+            const order = await createOrder({
               userEmail: user?.email,
               userName: shippingAddress.name,
+              address: {
+                name: shippingAddress.name,
+                phone: shippingAddress.phone,
+                address: shippingAddress.address
+              },
               shippingAddress: {
                 name: shippingAddress.name,
                 phone: shippingAddress.phone,
@@ -267,7 +304,7 @@ function Cart() {
   };
 
   // Handle payment submit
-  const handlePaymentSubmit = (e) => {
+  const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     
     if (paymentMethod === 'razorpay') {
@@ -275,9 +312,14 @@ function Cart() {
       return;
     }
     
-    const order = createOrder({
+    const order = await createOrder({
       userEmail: user?.email,
       userName: shippingAddress.name,
+      address: {
+        name: shippingAddress.name,
+        phone: shippingAddress.phone,
+        address: shippingAddress.address
+      },
       shippingAddress: {
         name: shippingAddress.name,
         phone: shippingAddress.phone,
@@ -533,16 +575,22 @@ function Cart() {
       </div>
 
       <form onSubmit={handlePaymentSubmit} className="payment-form">
+        {paymentDemoMode && (
+          <div className="payment-demo-notice">
+            ⚠️ Payment gateway not configured. Orders will be placed in demo mode.
+          </div>
+        )}
         <div className="payment-options">
-          <label className={`payment-option ${paymentMethod === 'razorpay' ? 'selected' : ''}`}>
+          <label className={`payment-option ${paymentMethod === 'razorpay' ? 'selected' : ''} ${paymentDemoMode ? 'disabled' : ''}`}>
             <input
               type="radio"
               name="payment"
               value="razorpay"
               checked={paymentMethod === 'razorpay'}
-              onChange={() => setPaymentMethod('razorpay')}
+              onChange={() => !paymentDemoMode && setPaymentMethod('razorpay')}
+              disabled={paymentDemoMode}
             />
-            <span>💳 Razorpay</span>
+            <span>💳 Razorpay {paymentDemoMode && '(Unavailable)'}</span>
           </label>
           
           <label className={`payment-option ${paymentMethod === 'card' ? 'selected' : ''}`}>
@@ -635,19 +683,19 @@ function Cart() {
       <div className="order-details">
         <div className="detail-row">
           <span>Order ID:</span>
-          <strong>#{orderPlaced?.id}</strong>
+          <strong>#{orderPlaced?.id || orderPlaced?._id}</strong>
         </div>
         <div className="detail-row">
           <span>Status:</span>
-          <span className="status-processing">{orderPlaced?.status}</span>
+          <span className="status-processing">{orderPlaced?.status || 'Order Confirmed'}</span>
         </div>
         <div className="detail-row">
           <span>Total Amount:</span>
-          <strong>₹{orderPlaced?.total?.toFixed(2)}</strong>
+          <strong>₹{typeof orderPlaced?.total === 'number' ? orderPlaced.total.toFixed(2) : orderPlaced?.total}</strong>
         </div>
         <div className="detail-row">
           <span>Delivery Address:</span>
-          <span>{orderPlaced?.shippingAddress?.address}</span>
+          <span>{orderPlaced?.shippingAddress?.address || orderPlaced?.address}</span>
         </div>
         <div className="detail-row">
           <span>Payment Method:</span>

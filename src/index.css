@@ -2459,6 +2459,26 @@ button[type="submit"]:hover {
   color: #1e293b;
 }
 
+.payment-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.payment-option.disabled:hover {
+  background: #f1f5f9;
+}
+
+.payment-demo-notice {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  color: #92400e;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
 .razorpay-info {
   text-align: center;
   padding: 1.5rem;

@@ -233,6 +233,31 @@
   opacity: 0.8;
 }
 
+/* Logout Button */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: #ff4757;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.logout-btn:hover {
+  background: #ff6b7a;
+  transform: scale(1.1);
+}
+
+.logout-btn svg {
+  font-size: 18px;
+}
+
 /* Profile Dropdown */
 .profile-dropdown {
   position: absolute;
